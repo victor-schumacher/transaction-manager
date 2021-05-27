@@ -7,8 +7,10 @@ import (
 
 func main() {
 	e := echo.New()
-	h := handler.NewAccount()
-	h.MakeAccountHandlers(e)
+	ah := handler.NewAccount()
+	ah.Handle(e)
+	th := handler.NewTransaction()
+	th.Handle(e)
 	if err := e.Start(":8080"); err != nil {
 		return
 	}

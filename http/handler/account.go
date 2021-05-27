@@ -17,10 +17,10 @@ func (a Account) findById(c echo.Context) error {
 }
 
 func (a Account) createNew(c echo.Context) error {
-	return 	c.JSON(http.StatusCreated, `{"account_id":"1"}`)
+	return c.JSON(http.StatusCreated, `{"account_id":"1"}`)
 }
 
-func (a Account) MakeAccountHandlers(e *echo.Echo) {
+func (a Account) Handle(e *echo.Echo) {
 	e.GET("/accounts", a.findById)
 	e.POST("accounts/", a.createNew)
 }
