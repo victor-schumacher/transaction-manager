@@ -6,6 +6,7 @@ import (
 )
 
 type Account struct {
+	ID string `json:"account_id"`
 }
 
 func NewAccount() Account {
@@ -13,14 +14,14 @@ func NewAccount() Account {
 }
 
 func (a Account) findById(c echo.Context) error {
-	return c.JSON(http.StatusOK, `{"account_id":1, "document_number":"09365523859"}`)
+	return c.JSON(http.StatusOK, Account{ID: "1"})
 }
 
 func (a Account) createNew(c echo.Context) error {
-	return c.JSON(http.StatusCreated, `{"account_id":"1"}`)
+	return c.JSON(http.StatusCreated, Account{ID: "1"})
 }
 
 func (a Account) Handle(e *echo.Echo) {
-	e.GET("/accounts", a.findById)
-	e.POST("accounts/", a.createNew)
+	e.GET("/accounts/:id", a.findById)
+	e.POST("/accounts", a.createNew)
 }
