@@ -2,7 +2,7 @@ package database
 
 import "database/sql"
 
-type DbConnection interface {
+type DBConnection interface {
 	Connect() *sql.DB
 	TestConnection()
 }

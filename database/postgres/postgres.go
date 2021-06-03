@@ -19,15 +19,20 @@ func NewConnection(c config.Config) Manager {
 	return Manager{c: c}
 }
 
-// Connect opens postgres connection, using uri provided on config, panics if error
+// Connect opens postgres connection, panics if error
 func (m Manager) Connect() *sql.DB {
-	log.Println(m.dataSourceName())
-
 	db, err := sql.Open("postgres", m.dataSourceName())
 	if err != nil {
 		log.Panic(err)
 	}
 	return db
+}
+
+// TestConnection pings the database, used to ensure database connection is ok, panics if error
+func (m Manager) TestConnection() {
+	if err := m.Connect().Ping(); err != nil {
+		log.Panic(err)
+	}
 }
 
 func (m Manager) dataSourceName() string {
@@ -40,12 +45,4 @@ func (m Manager) dataSourceName() string {
 		m.c.Database.Name,
 		m.c.Database.SSLMode,
 	)
-}
-
-// TestConnection pings the database, used to ensure database connection is ok, panics if error
-func (m Manager) TestConnection() {
-	c := m.Connect()
-	if err := c.Ping(); err != nil {
-		log.Panic(err)
-	}
 }
