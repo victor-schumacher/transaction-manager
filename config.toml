@@ -1,8 +1,10 @@
 [database]
-host = "192.168.1.1"
-port = 5432
-username = "postgres"
-password = ""
+host = "transaction-database"
+port = "5432"
+username = "transaction"
+password = "transaction"
+name = "transaction"
+SSLMode = "disable"
 
 [server]
-ports = [8080]
+port = 8080

@@ -15,10 +15,20 @@ func Load() (Config, error) {
 	return config, nil
 }
 
-type Config struct{
-	Db  Database `mapstructure:"database"`
+type Config struct {
+	Database Database
+	Server   Server
 }
 
 type Database struct {
+	Host     string
+	Port     string
+	Username string
+	Password string
+	Name     string
+	SSLMode  string
+}
 
+type Server struct {
+	Port string
 }
