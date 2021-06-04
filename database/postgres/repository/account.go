@@ -17,10 +17,11 @@ type AccountRepo struct {
 }
 
 type AccountEntity struct {
-	ID             uuid.UUID
-	DocumentNumber string
-	CreatedAt      time.Time
-	UpdatedAt      time.Time
+	ID                   uuid.UUID
+	DocumentNumber       string
+	AvailableCreditLimit int
+	CreatedAt            time.Time
+	UpdatedAt            time.Time
 }
 
 func NewAccount(db database.DBConnection) AccountRepo {
@@ -57,6 +58,7 @@ func (ar AccountRepo) FindOne(ID uuid.UUID) (AccountEntity, error) {
 		&account.DocumentNumber,
 		&account.CreatedAt,
 		&account.UpdatedAt,
+		&account.AvailableCreditLimit,
 	); err != nil {
 		log.Err(err).Msg("cannot find one account on database")
 		return account, err

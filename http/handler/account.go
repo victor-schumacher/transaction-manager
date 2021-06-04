@@ -16,8 +16,9 @@ type AccountManager struct {
 }
 
 type Account struct {
-	ID             uuid.UUID `json:"account_id"`
-	DocumentNumber string    `json:"document_number"`
+	ID                   uuid.UUID `json:"account_id"`
+	DocumentNumber       string    `json:"document_number"`
+	AvailableCreditLimit int       `json:"available_credit_limit"`
 }
 
 type AccountCreatedResponse struct {
@@ -54,8 +55,9 @@ func (m AccountManager) findById(c echo.Context) error {
 	}
 
 	account := Account{
-		ID:             accountEntity.ID,
-		DocumentNumber: accountEntity.DocumentNumber,
+		ID:                   accountEntity.ID,
+		DocumentNumber:       accountEntity.DocumentNumber,
+		AvailableCreditLimit: accountEntity.AvailableCreditLimit,
 	}
 	return c.JSON(http.StatusOK, account)
 }

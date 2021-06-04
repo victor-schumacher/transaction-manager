@@ -1,5 +1,4 @@
 create schema if not exists transaction
-
     create table if not exists transaction.account
     (
         id              uuid not null primary key,
