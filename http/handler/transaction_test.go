@@ -7,6 +7,7 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"transaction-manager/internal/mock"
 )
 
 func TestCreateTransaction(t *testing.T) {
@@ -15,7 +16,7 @@ func TestCreateTransaction(t *testing.T) {
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
-	transacation := NewTransaction()
+	transacation := NewTransaction(mock.TransactionRepo{}, e)
 
 	if assert.NoError(t, transacation.createNew(c)) {
 		assert.Equal(t, http.StatusCreated, rec.Code)

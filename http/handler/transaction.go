@@ -15,12 +15,12 @@ type Transaction struct {
 }
 
 type TransactionManager struct {
-	repo repository.TransactionRepo
+	repo repository.Transaction
 	e    *echo.Echo
 }
 
 func NewTransaction(
-	repo repository.TransactionRepo,
+	repo repository.Transaction,
 	e *echo.Echo,
 ) TransactionManager {
 	return TransactionManager{
