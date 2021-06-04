@@ -20,7 +20,6 @@ func TestCreateAccount(t *testing.T) {
 	c := e.NewContext(req, rec)
 	h := NewAccount()
 
-
 	if assert.NoError(t, h.createNew(c)) {
 		assert.Equal(t, http.StatusCreated, rec.Code)
 		assert.Equal(t, "{\"account_id\":\"1\"}\n", rec.Body.String())
