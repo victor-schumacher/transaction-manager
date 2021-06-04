@@ -32,7 +32,7 @@ func NewTransaction(
 func (m TransactionManager) createNew(c echo.Context) error {
 	t := Transaction{}
 	if err := c.Bind(&t); err != nil {
-		return err
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 	te := repository.TransactionEntity{
 		ID:            uuid.New(),
@@ -43,7 +43,7 @@ func (m TransactionManager) createNew(c echo.Context) error {
 	}
 
 	if err := m.repo.Save(te); err != nil {
-		return err
+		return echo.NewHTTPError(http.StatusInternalServerError)
 	}
 
 	return c.JSON(http.StatusCreated, nil)

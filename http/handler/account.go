@@ -39,7 +39,7 @@ func (m AccountManager) findById(c echo.Context) error {
 	id, err := uuid.Parse(paramId)
 	if err != nil {
 		log.Err(err).Msg("cannot parse uuid at find one account endpoint")
-		return echo.NewHTTPError(http.StatusInternalServerError, "invalid id")
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid id")
 	}
 
 	accountEntity, err := m.repo.FindOne(id)
@@ -50,8 +50,7 @@ func (m AccountManager) findById(c echo.Context) error {
 		)
 	}
 	if err != nil {
-		log.Err(err).Msg("cannot parse uuid at find one account endpoint")
-		return echo.NewHTTPError(http.StatusInternalServerError, nil)
+		return echo.NewHTTPError(http.StatusInternalServerError)
 	}
 
 	account := Account{
@@ -64,7 +63,7 @@ func (m AccountManager) findById(c echo.Context) error {
 func (m AccountManager) createNew(c echo.Context) error {
 	a := Account{}
 	if err := c.Bind(&a); err != nil {
-		return err
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
 	ae := repository.AccountEntity{
@@ -75,7 +74,7 @@ func (m AccountManager) createNew(c echo.Context) error {
 	}
 
 	if err := m.repo.Save(ae); err != nil {
-		return err
+		return echo.NewHTTPError(http.StatusInternalServerError)
 	}
 	return c.JSON(http.StatusCreated, AccountCreatedResponse{
 		Message: "account successfully created"},
