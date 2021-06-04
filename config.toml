@@ -1,5 +1,5 @@
 [database]
-host = "transaction-database"
+host = "localhost"
 port = "5432"
 username = "transaction"
 password = "transaction"

@@ -4,29 +4,51 @@ import (
 	"github.com/google/uuid"
 	"github.com/labstack/echo"
 	"net/http"
+	"time"
+	"transaction-manager/database/postgres/repository"
 )
 
 type Transaction struct {
-	ID              string `json:"id"`
-	AccountID       string `json:"account_id"`
+	AccountID       uuid.UUID `json:"account_id"`
 	OperationTypeID int    `json:"operation_type_id"`
 	Amount          int    `json:"amount"`
 }
 
-func NewTransaction() Transaction {
-	return Transaction{}
+type TransactionManager struct {
+	repo repository.TransactionRepo
+	e    *echo.Echo
 }
 
-func (a Transaction) createNew(c echo.Context) error {
+func NewTransaction(
+	repo repository.TransactionRepo,
+	e *echo.Echo,
+) TransactionManager {
+	return TransactionManager{
+		repo: repo,
+		e:    e,
+	}
+}
+
+func (m TransactionManager) createNew(c echo.Context) error {
 	t := Transaction{}
 	if err := c.Bind(&t); err != nil {
 		return err
 	}
+	te := repository.TransactionEntity{
+		ID:            uuid.New(),
+		AccountID:     t.AccountID,
+		OperationType: t.OperationTypeID,
+		Amount:        t.Amount,
+		EventDate:     time.Now(),
+	}
 
-	t.ID = uuid.New().String()
-	return c.JSON(http.StatusCreated, t.ID)
+	if err := m.repo.Save(te); err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusCreated, nil)
 }
 
-func (a Transaction) Handle(e *echo.Echo) {
-	e.POST("/transactions", a.createNew)
+func (m TransactionManager) Handle() {
+	m.e.POST("/transactions", m.createNew)
 }

@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"github.com/google/uuid"
+	"github.com/rs/zerolog/log"
 	"time"
 	"transaction-manager/database"
 )
@@ -14,8 +16,8 @@ type TransactionRepo struct {
 }
 
 type TransactionEntity struct {
-	ID            string
-	AccountID     string
+	ID            uuid.UUID
+	AccountID     uuid.UUID
 	OperationType int
 	Amount        int
 	EventDate     time.Time
@@ -29,7 +31,7 @@ func (tr TransactionRepo) Save(t TransactionEntity) error {
 	db := tr.db.Connect()
 	defer db.Close()
 
-	statement := "INSERT INTO TRANSACTION VALUES(?, ?, ?, ?, ?)"
+	statement := "INSERT INTO TRANSACTION VALUES($1, $2, $3, $4, $5)"
 	if _, err := db.Exec(
 		statement,
 		t.ID,
@@ -38,6 +40,7 @@ func (tr TransactionRepo) Save(t TransactionEntity) error {
 		t.Amount,
 		t.EventDate,
 	); err != nil {
+		log.Err(err).Msg("cannot add transaction into database")
 		return err
 	}
 

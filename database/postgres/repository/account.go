@@ -1,13 +1,15 @@
 package repository
 
 import (
+	"github.com/google/uuid"
+	"github.com/rs/zerolog/log"
 	"time"
 	"transaction-manager/database"
 )
 
 type Account interface {
 	Save(a AccountEntity) error
-	FindOne(ID string) error
+	FindOne(ID uuid.UUID) (AccountEntity, error)
 }
 
 type AccountRepo struct {
@@ -15,7 +17,7 @@ type AccountRepo struct {
 }
 
 type AccountEntity struct {
-	ID             string
+	ID             uuid.UUID
 	DocumentNumber string
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
@@ -29,7 +31,7 @@ func (ar AccountRepo) Save(a AccountEntity) error {
 	db := ar.db.Connect()
 	defer db.Close()
 
-	statement := "INSERT INTO ACCOUNT VALUES(?, ?, ?, ?)"
+	statement := "INSERT INTO account VALUES($1, $2, $3, $4)"
 	if _, err := db.Exec(
 		statement,
 		a.ID,
@@ -37,21 +39,27 @@ func (ar AccountRepo) Save(a AccountEntity) error {
 		a.CreatedAt,
 		a.UpdatedAt,
 	); err != nil {
+		log.Err(err).Msg("cannot save account into database")
 		return err
 	}
 
 	return nil
 }
 
-func (ar AccountRepo) FindOne(ID string) (AccountEntity, error) {
+func (ar AccountRepo) FindOne(ID uuid.UUID) (AccountEntity, error) {
 	db := ar.db.Connect()
 	defer db.Close()
 
-	row := db.QueryRow("SELECT * FROM ACCOUNT WHERE ID=?", ID)
+	row := db.QueryRow("SELECT * FROM account WHERE id=$1", ID)
 	account := AccountEntity{}
-	if err := row.Scan(&account); err != nil {
+	if err := row.Scan(
+		&account.ID,
+		&account.DocumentNumber,
+		&account.CreatedAt,
+		&account.UpdatedAt,
+	); err != nil {
+		log.Err(err).Msg("cannot find one account on database")
 		return account, err
 	}
-
 	return account, nil
 }
