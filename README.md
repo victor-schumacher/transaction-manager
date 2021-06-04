@@ -6,6 +6,6 @@
 `docker-compose up`
 na raiz do projeto irá subir o banco e o server
 
-é necessário rodar o .sql em `resources/database/`
+é necessário rodar o .sql que está em `resources/database/`
 
 
